@@ -8,18 +8,24 @@ import cors from 'cors';
 
 dotenv.config();
 const app = express();
-app.use(cookieParser());
-app.use(express.json());
-app.use('/api/auth', authRoutes);
-app.use('/api/massage', messageRoutes);
+
+// ✅ Set CORS BEFORE defining routes
 app.use(
   cors({
-    origin: 'http://localhost:3000',
+    origin: 'http://localhost:5173',
     credentials: true,
   })
 );
-const port = process.env.PORT;
-app.listen(5001, () => {
-  console.log(`The server is runing on port ${port}`);
+
+app.use(cookieParser());
+app.use(express.json());
+
+// ✅ Define routes after middleware
+app.use('/api/auth', authRoutes);
+app.use('/api/message', messageRoutes);
+
+const port = process.env.PORT || 5001;
+app.listen(port, () => {
+  console.log(`The server is running on port ${port}`);
   connectDb();
 });
