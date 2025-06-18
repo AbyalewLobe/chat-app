@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import AuthImagePattern from '../components/AuthImagePattern';
 import toast from 'react-hot-toast';
-export const SignUpPage = () => {
+const SignUpPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     userName: '',
@@ -163,3 +163,5 @@ export const SignUpPage = () => {
     </>
   );
 };
+
+export default SignUpPage;

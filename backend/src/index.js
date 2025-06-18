@@ -22,7 +22,7 @@ app.use(express.json());
 
 // ✅ Define routes after middleware
 app.use('/api/auth', authRoutes);
-app.use('/api/message', messageRoutes);
+app.use('/api/messages', messageRoutes);
 
 const port = process.env.PORT || 5001;
 app.listen(port, () => {

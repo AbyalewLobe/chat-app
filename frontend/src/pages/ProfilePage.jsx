@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
 import { Camera, Mail, User } from 'lucide-react';
 
-export const ProfilePage = () => {
+const ProfilePage = () => {
   const { authUser, updateProfile, isUpdateProfile } = useAuthStore();
   const [selectedImg, setSelectedImage] = useState(null);
   const handleImageUpload = async (e) => {
@@ -97,3 +97,5 @@ export const ProfilePage = () => {
     </>
   );
 };
+
+export default ProfilePage;
