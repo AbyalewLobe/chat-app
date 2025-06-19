@@ -1,5 +1,6 @@
 import User from '../models/user.model.js';
 import Message from '../models/message.model.js';
+import cloudinary from '../lib/clodinary.js';
 export const getUsersForSidebar = async (req, res) => {
   try {
     const loggedInUserId = req.user._id;
@@ -35,8 +36,9 @@ export const sendMessage = async (req, res) => {
     const { text, image } = req.body;
     const { id: reciverId } = req.params;
     const senderId = req.user._id;
+
     let imageUrl;
-    if (imageUrl) {
+    if (image) {
       const uploadResponse = await cloudinary.uploader.upload(image);
       imageUrl = uploadResponse.secure_url;
     }
@@ -47,8 +49,11 @@ export const sendMessage = async (req, res) => {
       text,
       image: imageUrl,
     });
+
     await newMessage.save();
-    //todo real time functionality gose here
+
+    // TODO: real-time functionality goes here
+
     res.status(201).json(newMessage);
   } catch (error) {
     console.log('Error in sendMessage controller:', error.message);
