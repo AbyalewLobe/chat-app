@@ -17,20 +17,23 @@ export const getUsersForSidebar = async (req, res) => {
 export const getMessages = async (req, res) => {
   try {
     const { id: userToChatId } = req.params;
-    const myId = req.user_id;
+    const myId = req.user._id; 
 
     const messages = await Message.find({
       $or: [
         { senderId: myId, reciverId: userToChatId },
         { senderId: userToChatId, reciverId: myId },
       ],
-    });
+    })
+    // .sort({ createdAt: 1 }); // Optional: order messages chronologically
+
     res.status(200).json(messages);
   } catch (error) {
-    console.log('Error in getUser controller: ', error.message);
+    console.log('Error in getMessage controller: ', error.message);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
 export const sendMessage = async (req, res) => {
   try {
     const { text, image } = req.body;
