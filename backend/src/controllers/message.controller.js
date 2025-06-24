@@ -1,6 +1,7 @@
 import User from '../models/user.model.js';
 import Message from '../models/message.model.js';
 import cloudinary from '../lib/clodinary.js';
+import { getReceiverSocketId, io } from '../lib/socket.js';
 export const getUsersForSidebar = async (req, res) => {
   try {
     const loggedInUserId = req.user._id;
@@ -17,15 +18,14 @@ export const getUsersForSidebar = async (req, res) => {
 export const getMessages = async (req, res) => {
   try {
     const { id: userToChatId } = req.params;
-    const myId = req.user._id; 
+    const myId = req.user._id;
 
     const messages = await Message.find({
       $or: [
         { senderId: myId, reciverId: userToChatId },
         { senderId: userToChatId, reciverId: myId },
       ],
-    })
-    // .sort({ createdAt: 1 }); // Optional: order messages chronologically
+    });
 
     res.status(200).json(messages);
   } catch (error) {
@@ -54,9 +54,10 @@ export const sendMessage = async (req, res) => {
     });
 
     await newMessage.save();
-
-    // TODO: real-time functionality goes here
-
+    const receiverSocketId = getReceiverSocketId(reciverId);
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit('newMessage', newMessage);
+    }
     res.status(201).json(newMessage);
   } catch (error) {
     console.log('Error in sendMessage controller:', error.message);
