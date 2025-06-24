@@ -18,8 +18,5 @@
     "url": "https://github.com/AbyalewLobe/chat-app/issues"
   },
   "homepage": "https://github.com/AbyalewLobe/chat-app#readme",
-  "description": "",
-  "engines": {
-    "node": "20.x"
-  }
+  "description": ""
 }

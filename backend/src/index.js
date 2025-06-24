@@ -22,8 +22,9 @@ app.use(
     credentials: true,
   })
 );
-
+console.log('Registering /api/auth');
 app.use('/api/auth', authRoutes);
+console.log('Registering /api/messages');
 app.use('/api/messages', messageRoutes);
 
 if (process.env.NODE_ENV === 'production') {
