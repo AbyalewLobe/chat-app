@@ -47,7 +47,7 @@ export const useChatStore = create((set, get) => ({
     } catch (error) {
       const errorMessage =
         error?.response?.data?.message || 'Failed to send message';
-      console.error('Send message error:', error); // for debugging
+      console.error('Send message error', error); // for debugging
       toast.error(errorMessage);
     }
   },
