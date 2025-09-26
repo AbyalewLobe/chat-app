@@ -5,37 +5,46 @@ import MessageInput from './MessageInput';
 import MessageSkeleton from './skeletons/MessageSkeleton';
 import { useAuthStore } from '../store/useAuthStore';
 import { formatMessageTime } from '../lib/utils';
+
 function ChatContainer() {
   const {
-    messages,
+    messagesByUser,
     getMessages,
-    isMessagesLoading,
+    isMessageLoading,
     selectedUser,
     unsubscribeFromMessages,
     subscribeToMessages,
   } = useChatStore();
+
   const messageEndRef = useRef(null);
   const { authUser } = useAuthStore();
-  useEffect(() => {
-    getMessages(selectedUser._id);
 
+  // Get messages for the selected user
+  const messages = selectedUser ? messagesByUser[selectedUser._id] || [] : [];
+
+  // Fetch messages and subscribe to new messages
+  useEffect(() => {
+    if (!selectedUser?._id) return;
+
+    getMessages(selectedUser._id);
     subscribeToMessages();
 
     return () => unsubscribeFromMessages();
   }, [
-    selectedUser._id,
+    selectedUser?._id,
     getMessages,
     unsubscribeFromMessages,
     subscribeToMessages,
   ]);
 
+  // Auto-scroll to the latest message
   useEffect(() => {
-    if (messageEndRef.current && messages) {
+    if (messageEndRef.current && messages.length > 0) {
       messageEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
 
-  if (isMessagesLoading) {
+  if (isMessageLoading) {
     return (
       <div className="flex-1 flex flex-col overflow-auto">
         <ChatHeader />
@@ -44,18 +53,20 @@ function ChatContainer() {
       </div>
     );
   }
+
   return (
-    <>
-      <div className="flex-1 flex flex-col overflow-auto">
-        <ChatHeader />
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {messages.map((message) => (
+    <div className="flex-1 flex flex-col overflow-auto">
+      <ChatHeader />
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {messages.map((message, index) => {
+          const isLastMessage = index === messages.length - 1;
+          return (
             <div
               key={message._id}
               className={`chat ${
                 message.senderId === authUser._id ? 'chat-end' : 'chat-start'
               }`}
-              ref={messageEndRef}
+              ref={isLastMessage ? messageEndRef : null}
             >
               <div className="chat-image avatar">
                 <div className="size-10 rounded-full border">
@@ -65,7 +76,7 @@ function ChatContainer() {
                         ? authUser.profilePic || 'user.png'
                         : selectedUser.profilePic || 'user.png'
                     }
-                    alt=" profile pic"
+                    alt="profile pic"
                   />
                 </div>
               </div>
@@ -85,11 +96,11 @@ function ChatContainer() {
                 {message.text && <p>{message.text}</p>}
               </div>
             </div>
-          ))}
-        </div>
-        <MessageInput />
+          );
+        })}
       </div>
-    </>
+      <MessageInput />
+    </div>
   );
 }
 

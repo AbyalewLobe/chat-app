@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-const { Schema } = mongoose;
+const { Schema } = mongoose; // <-- this line defines Schema
 
 const messageSchema = new Schema(
   {
@@ -8,13 +8,15 @@ const messageSchema = new Schema(
       ref: 'User',
       required: true,
     },
-    reciverId: {
+    receiverId: {
+      // fixed spelling
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: true,
     },
     text: {
       type: String,
+      default: '', // optional but safe
     },
     image: {
       type: String,
