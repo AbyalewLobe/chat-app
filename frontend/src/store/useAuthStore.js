@@ -3,7 +3,9 @@ import { create } from 'zustand';
 import { toast } from 'react-hot-toast';
 import { io } from 'socket.io-client';
 const BASE_URL =
-  import.meta.env.MODE === 'development' ? 'http://localhost:5001' : '/';
+  import.meta.env.MODE === 'development'
+    ? 'http://localhost:5001'
+    : 'https://chat-app-6rw1.onrender.com';
 export const useAuthStore = create((set, get) => ({
   authUser: null,
   isSigningUp: false,
@@ -95,6 +97,7 @@ export const useAuthStore = create((set, get) => ({
         userId: authUser._id,
       },
       withCredentials: true,
+      transports: ['websocket'],
     });
 
     newSocket.connect();
