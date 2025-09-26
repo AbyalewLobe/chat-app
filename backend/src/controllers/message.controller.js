@@ -17,20 +17,26 @@ export const getUsersForSidebar = async (req, res) => {
 
 export const getMessages = async (req, res) => {
   try {
-    const { id: userToChatId } = req.params;
+    const { id: usrToChatId } = req.params;
     const myId = req.user._id;
-
+    // Validation
+    if (!myId || !usrToChatId) {
+      console.log('Missing myId or usrToChatId', { myId, usrToChatId });
+      return res.status(400).json({ message: 'Invalid user or chat id' });
+    }
     const messages = await Message.find({
       $or: [
-        { senderId: myId, reciverId: userToChatId },
-        { senderId: userToChatId, reciverId: myId },
+        { senderId: myId, receiverId: usrToChatId },
+        { senderId: usrToChatId, receiverId: myId },
       ],
     });
 
-    res.status(200).json(messages);
+    res.status(200).json({
+      messages,
+    });
   } catch (error) {
-    console.log('Error in getMessage controller ', error.message);
-    res.status(500).json({ message: 'Internal server error' });
+    console.log('Error in getmessage controller:', error.message);
+    return res.status(500).json({ message: 'Internal server error' });
   }
 };
 
